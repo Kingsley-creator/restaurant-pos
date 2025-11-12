@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: restaurant-pos
+    env: docker
+    plan: free
+    branch: main
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: DB_HOST
+        value: dpg-d4a7id0dl3ps739kge4g-a.frankfurt-postgres.render.com
+      - key: DB_PORT
+        value: 5432
+      - key: DB_NAME
+        value: restaurant_pos_db_nk05
+      - key: DB_USER
+        value: restaurant_pos_db_nk05_user
+      - key: DB_PASS
+        value: 3jDDib7H18qU5yc9FFRnv3IYTBHwC1nr
