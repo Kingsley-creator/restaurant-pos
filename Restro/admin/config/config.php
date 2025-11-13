@@ -1,8 +1,8 @@
 <?php
-$host = 'localhost';
-$db   = 'rposystem';     // your PostgreSQL DB name
-$user = 'postgres';      // PostgreSQL username
-$pass = 'otiu2025.'; // PostgreSQL password
+$host = 'dpg-d4a7id0dl3ps739kge4g-a.frankfurt-postgres.render.com';
+$db   = 'restaurant_pos_db_nk05';
+$user = 'restaurant_pos_db_nk05_user';
+$pass = '3jDDib7H18qU5yc9FFRnv3IYTBHwC1nr';
 $port = '5432';
 
 try {
