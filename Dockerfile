@@ -9,22 +9,27 @@ RUN apt-get update \
 # Enable Apache rewrite module
 RUN a2enmod rewrite
 
-# Copy custom Apache virtual host config (we'll create this file next)
+# Copy Apache virtual host config
 COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
 
-# Copy application code into the container
+# Enable our custom site
+RUN a2ensite 000-default.conf
+
+# Disable default Apache site
+RUN a2dissite 000-default
+
+# Copy application code
 COPY . /var/www/html/
 
-# Ensure Restro is accessible and allow .htaccess changes
-# (We'll set DocumentRoot inside 000-default.conf to /var/www/html/Restro)
+# Working directory at web root
 WORKDIR /var/www/html
 
-# Add startup script that updates Apache ports at container start
+# Add start script that handles Render's dynamic port
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
-# Expose a port (advisory). The start script will use $PORT or fallback to 10000.
+# Expose port (Render sets real $PORT at runtime)
 EXPOSE 10000
 
-# Start helper script which adjusts Listen port then launches apache
+# Start Apache through our script
 CMD ["/start.sh"]
