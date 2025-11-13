@@ -1,42 +1,54 @@
 <?php
 /**
- * Restaurant POS - Unified Database Configuration
- * Works both locally and in Render cloud deployment.
+ * Restaurant POS - Universal Database Configuration
+ * Works locally and on Render cloud PostgreSQL.
  * Author: O. Kingsley
  */
 
 # ----------------------------------------------------------
-# Load environment variables (Render provides them automatically)
-# Fallbacks are your local PostgreSQL setup.
+# Try using Render's DATABASE_URL first
 # ----------------------------------------------------------
-$host = getenv('DB_HOST') ?: 'localhost';
-$port = getenv('DB_PORT') ?: '5432';
-$db   = getenv('DB_NAME') ?: 'rposystem';
-$user = getenv('DB_USER') ?: 'postgres';
-$pass = getenv('DB_PASS') ?: 'otiu2025.';
+$databaseUrl = getenv("DATABASE_URL");
+
+if ($databaseUrl) {
+    // Parse Render DATABASE_URL
+    $url = parse_url($databaseUrl);
+
+    $host = $url['host'];
+    $port = $url['port'];
+    $user = $url['user'];
+    $pass = $url['pass'];
+    $db   = ltrim($url['path'], '/');
+
+} else {
+    # ----------------------------------------------------------
+    # Fallback to LOCAL ENV settings (for XAMPP / localhost)
+    # ----------------------------------------------------------
+    $host = getenv('DB_HOST') ?: 'localhost';
+    $port = getenv('DB_PORT') ?: '5432';
+    $db   = getenv('DB_NAME') ?: 'rposystem';
+    $user = getenv('DB_USER') ?: 'postgres';
+    $pass = getenv('DB_PASS') ?: 'otiu2025.';
+}
 
 # ----------------------------------------------------------
-# Error Reporting (Turn OFF on production)
+# Enable error reporting (Turn off in production)
 # ----------------------------------------------------------
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 # ----------------------------------------------------------
-# Initialize PostgreSQL PDO Connection
+# Connect using PDO
 # ----------------------------------------------------------
 try {
-    $pdo = new PDO("pgsql:host=$host;port=$port;dbname=$db", $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    // Optional: You can uncomment this line to verify the connection locally
-    // echo "<p style='color:green;text-align:center;'>✅ Database Connected Successfully</p>";
+    $dsn = "pgsql:host={$host};port={$port};dbname={$db}";
+    $pdo = new PDO($dsn, $user, $pass, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+    ]);
 
 } catch (PDOException $e) {
-    // Safe error message (no credentials exposed)
-    echo "<h3 style='color:red; text-align:center;'>⚠️ Database connection failed.</h3>";
-    // Uncomment line below for debugging only (remove after testing)
-    // echo "<pre>" . $e->getMessage() . "</pre>";
+    echo "<h3 style='color:red;text-align:center;'>⚠️ Database connection failed.</h3>";
     exit();
 }
 ?>
