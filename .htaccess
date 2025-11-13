@@ -1,6 +1,13 @@
 RewriteEngine On
 
-RewriteRule ^$ /Restro/ [L]
+# Do NOT redirect root "/" because index.php is here
+RewriteRule ^$ /index.php [L]
 
-RewriteCond %{REQUEST_URI} !^/Restro/
+# If a request is already going to Restro, don't touch it
+RewriteCond %{REQUEST_URI} ^/Restro/
+RewriteRule ^ - [L]
+
+# Otherwise, send only non-existing paths to Restro
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ /Restro/$1 [L]
