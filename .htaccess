@@ -1,9 +1,6 @@
-Options +FollowSymLinks
 RewriteEngine On
 
-# Redirect root to /Restro
-RewriteRule ^$ Restro/ [L]
+RewriteRule ^$ /Restro/ [L]
 
-# Redirect any non-file, non-directory request to Restro folder
 RewriteCond %{REQUEST_URI} !^/Restro/
-RewriteRule ^(.*)$ Restro/$1 [L]
+RewriteRule ^(.*)$ /Restro/$1 [L]
